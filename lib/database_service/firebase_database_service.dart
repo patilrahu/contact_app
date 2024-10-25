@@ -104,4 +104,19 @@ class FirebaseDatabaseService {
       return false;
     }
   }
+
+ static Future<List<Contact>> fetchFavoriteContacts() async {
+  try {
+    QuerySnapshot snapshot = await contactsCollection
+        .where('isFavourite', isEqualTo: true)
+        .get();
+
+    return snapshot.docs.map((doc) {
+      return Contact.fromMap(doc.data() as Map<String, dynamic>);
+    }).toList();
+  } catch (e) {
+    print('Error fetching favorite contacts: $e');
+    return [];
+  }
+}
 }

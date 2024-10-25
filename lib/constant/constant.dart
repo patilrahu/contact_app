@@ -5,4 +5,5 @@ class AppConstant {
   static var contactDetail = "Contact Detail";
   static var save = "Save";
   static var editContact = "Edit Contact";
+    static var favourite = "Favourites";
 }

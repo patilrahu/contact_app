@@ -5,6 +5,7 @@ import 'package:contactapp/database_service/firebase_database_service.dart';
 import 'package:contactapp/feature/contact/model/contact_model.dart';
 import 'package:contactapp/feature/contact/ui/add_contact.dart';
 import 'package:contactapp/feature/contact_detail/ui/contact_detail.dart';
+import 'package:contactapp/feature/favourite/ui/favouriteList.dart';
 import 'package:contactapp/widgets/app_bar.dart';
 import 'package:contactapp/widgets/button.dart';
 import 'package:contactapp/widgets/text_widget.dart';
@@ -37,8 +38,31 @@ class _ContactListState extends State<ContactList> {
         body: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 20, left: 20),
-              child: appBar(context, AppConstant.contactListTitle),
+              padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  appBar(context, AppConstant.contactListTitle),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const Favouritelist(),));
+                    },
+                    child: Column(
+                      children: [
+                        const Icon(
+                          Icons.favorite_border,
+                        ),
+                        const AppText(
+                                  text: 'Favourites',
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
             Expanded(
               child: FutureBuilder<List<Contact>>(
@@ -94,19 +118,22 @@ class _ContactListState extends State<ContactList> {
                           onTap: () {
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) {
-                                return ContactDetail(contact: contact,
+                                return ContactDetail(
+                                  contact: contact,
                                   firstName: contact.firstName,
                                   lastName: contact.lastName,
                                   mobilenumber: contact.contactNumber,
                                   email: contact.email,
                                 );
                               },
-                            )).then((value) {
-                              setState(() {
-                                future =
-                                    firebaseDatabaseService.fetchContacts();
-                              });
-                            },);
+                            )).then(
+                              (value) {
+                                setState(() {
+                                  future =
+                                      firebaseDatabaseService.fetchContacts();
+                                });
+                              },
+                            );
                           },
                           title: AppText(
                               text: '${contact.firstName} ${contact.lastName}'),
@@ -120,18 +147,21 @@ class _ContactListState extends State<ContactList> {
                               child: const Icon(Icons.person)),
                           trailing: InkWell(
                             onTap: () {
-
                               setState(() {
-                                contact.isFavourite = !(contact.isFavourite ?? false);
+                                contact.isFavourite =
+                                    !(contact.isFavourite ?? false);
                               });
-                              FirebaseDatabaseService.updateIsFavorite(contact.contactNumber,contact.isFavourite ?? false );
+                              FirebaseDatabaseService.updateIsFavorite(
+                                  contact.contactNumber,
+                                  contact.isFavourite ?? false);
                             },
                             child: Icon(
-                              contact.isFavourite  ?? false
+                              contact.isFavourite ?? false
                                   ? Icons.favorite
                                   : Icons.favorite_border,
-                              color:
-                                  contact.isFavourite ?? false  ? Colors.red : null,
+                              color: contact.isFavourite ?? false
+                                  ? Colors.red
+                                  : null,
                             ),
                           ),
                         );
@@ -152,7 +182,7 @@ class _ContactListState extends State<ContactList> {
                 // ignore: use_build_context_synchronously
                 Navigator.push(context, MaterialPageRoute(
                   builder: (context) {
-                    return  AddContact();
+                    return AddContact();
                   },
                 )).then(
                   (value) {
